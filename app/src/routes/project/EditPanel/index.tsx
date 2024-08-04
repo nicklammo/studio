@@ -2,11 +2,14 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MagicWandIcon } from '@radix-ui/react-icons';
 import { observer } from 'mobx-react-lite';
-import { useEditorEngine } from '..';
+import { editorEngine } from '@/lib/editor/engine';
 import ManualTab from './ManualTab';
 
-const EditPanel = observer(() => {
-    const editorEngine = useEditorEngine();
+const EditPanel = observer(({ 
+    setIsEditPanelFocused,
+}  : {
+    setIsEditPanelFocused: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
     enum TabValue {
         MANUAL = 'manual',
         ASSISTED = 'assisted',
@@ -23,7 +26,7 @@ const EditPanel = observer(() => {
 
     function renderTabs() {
         return (
-            <Tabs defaultValue={selectedTab}>
+            <Tabs defaultValue={selectedTab} onMouseEnter={() => setIsEditPanelFocused(true)} onMouseLeave={() => setIsEditPanelFocused(false)}>
                 <TabsList className="bg-transparent w-full p-0 gap-4 select-none">
                     <TabsTrigger className="bg-transparent p-0 text-xs" value={TabValue.MANUAL}>
                         Set Styles

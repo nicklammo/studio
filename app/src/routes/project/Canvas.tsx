@@ -1,11 +1,11 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { useEditorEngine } from '.';
+import { observer } from 'mobx-react-lite';
+import { editorEngine } from '@/lib/editor/engine';
 
-function Canvas({ children }: { children: ReactNode }) {
+const Canvas = observer(({ children }: { children: ReactNode }) => {
     const [position, setPosition] = useState({ x: 300, y: 50 });
     const [scale, setScale] = useState(0.6);
 
-    const editorEngine = useEditorEngine();
     const containerRef = useRef<HTMLDivElement>(null);
     const zoomSensitivity = 0.006;
     const panSensitivity = 0.52;
@@ -86,6 +86,6 @@ function Canvas({ children }: { children: ReactNode }) {
             </div>
         </div>
     );
-}
+});
 
 export default Canvas;

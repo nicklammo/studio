@@ -1,7 +1,7 @@
 import { EditorMode } from '@/lib/editor/engine';
 import { observer } from 'mobx-react-lite';
 import { MouseEvent, useRef } from 'react';
-import { useEditorEngine } from '..';
+import { editorEngine } from '@/lib/editor/engine';
 
 interface ResizeHandleProps {
     webviewRef: React.RefObject<Electron.WebviewTag>;
@@ -15,7 +15,6 @@ enum HandleType {
 }
 
 const ResizeHandles = observer(({ webviewSize, setWebviewSize }: ResizeHandleProps) => {
-    const editorEngine = useEditorEngine();
     const resizeHandleRef = useRef(null);
 
     const startResize = (

@@ -3,7 +3,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import LayersTab from './LayersTab';
 import { capitalizeFirstLetter } from '/common/helpers';
 
-function LayersPanel() {
+function LayersPanel({
+    setIsLayersPanelFocused,
+}: {
+    setIsLayersPanelFocused: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
     enum TabValue {
         LAYERS = 'layers',
         COMPONENTS = 'components',
@@ -12,7 +16,7 @@ function LayersPanel() {
 
     function renderTabs() {
         return (
-            <Tabs defaultValue={selectedTab}>
+            <Tabs defaultValue={selectedTab} onMouseEnter={() => setIsLayersPanelFocused(true)} onMouseLeave={() => setIsLayersPanelFocused(false)}>
                 <TabsList className="bg-transparent w-full p-0 gap-4 select-none">
                     <TabsTrigger className="bg-transparent p-0 text-xs" value={TabValue.LAYERS}>
                         {capitalizeFirstLetter(TabValue.LAYERS)}

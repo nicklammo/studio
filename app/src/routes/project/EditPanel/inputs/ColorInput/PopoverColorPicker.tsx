@@ -1,4 +1,5 @@
-import { useEditorEngine } from '@/routes/project';
+
+import { editorEngine } from '@/lib/editor/engine';
 import { useEffect, useState } from 'react';
 import { HexAlphaColorPicker } from 'react-colorful';
 import { Popover } from 'react-tiny-popover';
@@ -10,7 +11,6 @@ interface PopoverPickerProps {
 
 export const PopoverPicker = ({ color, onChange }: PopoverPickerProps) => {
     const [isOpen, toggle] = useState(false);
-    const editorEngine = useEditorEngine();
 
     useEffect(() => {
         return () => editorEngine.history.commitTransaction();

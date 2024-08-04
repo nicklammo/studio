@@ -4,29 +4,36 @@ import { WebviewMetadata } from '@/lib/models';
 import { Button } from '@/components/ui/button';
 import { ExternalLinkIcon } from '@radix-ui/react-icons';
 import { observer } from 'mobx-react-lite';
-import { useEffect, useRef, useState } from 'react';
-import { useEditorEngine } from '..';
+import { useEffect, useState } from 'react';
 import BrowserControls from './BrowserControl';
 import GestureScreen from './GestureScreen';
 import ResizeHandles from './ResizeHandles';
 import { Links } from '/common/constants';
+import { editorEngine } from '@/lib/editor/engine';
+
+
 
 const Webview = observer(
     ({
         messageBridge,
         metadata,
+        webviewRef,
+        setIsContextMenuVisible,
+        setIsWebviewFocused,
     }: {
         messageBridge: WebviewMessageBridge;
         metadata: WebviewMetadata;
+        webviewRef: React.RefObject<Electron.WebviewTag>;
+        setIsContextMenuVisible: React.Dispatch<React.SetStateAction<boolean>>,
+        setIsWebviewFocused: React.Dispatch<React.SetStateAction<boolean>>;
     }) => {
-        const webviewRef = useRef<Electron.WebviewTag>(null);
-        const editorEngine = useEditorEngine();
         const [webviewSrc, setWebviewSrc] = useState<string>(metadata.src);
         const [selected, setSelected] = useState<boolean>(false);
         const [hovered, setHovered] = useState<boolean>(false);
         const [webviewSize, setWebviewSize] = useState({ width: 1536, height: 960 });
         const [domFailed, setDomFailed] = useState(false);
         const RETRY_TIMEOUT = 3000;
+
 
         useEffect(setupFrame, [webviewRef]);
         useEffect(
@@ -67,9 +74,15 @@ const Webview = observer(
             if (!webview) {
                 return;
             }
-            const body = await editorEngine.dom.getBodyFromWebview(webview);
-            editorEngine.dom.setDom(metadata.id, body);
-            setDomFailed(body.children.length === 0);
+            const htmlString = await webview.executeJavaScript(
+                'document.documentElement.outerHTML',
+            );
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+            const rootNode = doc.body;
+            editorEngine.dom.setDom(metadata.id, rootNode);
+
+            setDomFailed(rootNode.children.length === 0);
         }
 
         function handleDomFailed() {
@@ -82,51 +95,60 @@ const Webview = observer(
             }, RETRY_TIMEOUT);
         }
 
+
+        useEffect(() => {
+            setIsWebviewFocused(hovered);
+        }, [hovered])
         return (
-            <div className="flex flex-col space-y-4">
-                <BrowserControls
-                    webviewRef={webviewRef}
-                    webviewSrc={webviewSrc}
-                    setWebviewSrc={setWebviewSrc}
-                    selected={selected}
-                    hovered={hovered}
-                    setHovered={setHovered}
-                />
-                <div className="relative">
-                    <ResizeHandles
+            <>
+                <div className="flex flex-col space-y-4">
+                    <BrowserControls
                         webviewRef={webviewRef}
-                        webviewSize={webviewSize}
-                        setWebviewSize={setWebviewSize}
-                    />
-                    <webview
-                        id={metadata.id}
-                        ref={webviewRef}
-                        className="w-[96rem] h-[60rem] bg-black/10 backdrop-blur-sm transition"
-                        src={metadata.src}
-                        preload={`file://${window.env.WEBVIEW_PRELOAD_PATH}`}
-                        allowpopups={'true' as any}
-                        style={{ width: webviewSize.width, height: webviewSize.height }}
-                    ></webview>
-                    <GestureScreen
-                        webviewRef={webviewRef}
+                        webviewSrc={webviewSrc}
+                        setWebviewSrc={setWebviewSrc}
+                        selected={selected}
+                        hovered={hovered}
                         setHovered={setHovered}
-                        metadata={metadata}
                     />
-                    {domFailed && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black border">
-                            <p className="text-white">No projects found</p>
-                            <Button
-                                variant={'link'}
-                                onClick={() => {
-                                    window.open(Links.USAGE_DOCS, '_blank');
-                                }}
-                            >
-                                See usage instructions <ExternalLinkIcon className="ml-2" />
-                            </Button>
-                        </div>
-                    )}
+                    <div 
+                        className="relative"
+                    >
+                        <ResizeHandles
+                            webviewRef={webviewRef}
+                            webviewSize={webviewSize}
+                            setWebviewSize={setWebviewSize}
+                        />
+                        <webview
+                            id={metadata.id}
+                            ref={webviewRef}
+                            className="w-[96rem] h-[60rem] bg-black/10 backdrop-blur-sm transition"
+                            src={metadata.src}
+                            preload={`file://${window.env.WEBVIEW_PRELOAD_PATH}`}
+                            allowpopups={'true' as any}
+                            style={{ width: webviewSize.width, height: webviewSize.height }}
+                        ></webview>
+                        <GestureScreen
+                            webviewRef={webviewRef}
+                            setHovered={setHovered}
+                            metadata={metadata}
+                            setIsContextMenuVisible={setIsContextMenuVisible}
+                        />
+                        {domFailed && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black border">
+                                <p className="text-white">No projects found</p>
+                                <Button
+                                    variant={'link'}
+                                    onClick={() => {
+                                        window.open(Links.USAGE_DOCS, '_blank');
+                                    }}
+                                >
+                                    See usage instructions <ExternalLinkIcon className="ml-2" />
+                                </Button>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
+            </>
         );
     },
 );

@@ -2,7 +2,7 @@ import { ElementStyle } from '@/lib/editor/engine/styles/models';
 import { parsedValueToString, stringToParsedValue } from '@/lib/editor/engine/styles/numberUnit';
 import { appendCssUnit } from '@/lib/editor/engine/styles/units';
 import React, { useEffect, useState } from 'react';
-import { useEditorEngine } from '../..';
+import { editorEngine } from '@/lib/editor/engine';
 import { constructChangeCurried, UpdateElementStyleCallback } from './InputsCommon';
 
 interface Props {
@@ -14,7 +14,6 @@ interface Props {
 const TextInput = ({ elementStyle, updateElementStyle, inputWidth = 'w-full' }: Props) => {
     const [localValue, setLocalValue] = useState(elementStyle.value);
     const [isFocused, setIsFocused] = useState(false);
-    const editorEngine = useEditorEngine();
 
     const constructChange = constructChangeCurried(elementStyle.value);
 

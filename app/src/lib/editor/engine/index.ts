@@ -167,3 +167,5 @@ export class EditorEngine {
     }
     private debouncedRefreshClickedElements = debounce(this.undebouncedRefreshClickedElements, 10);
 }
+
+export const editorEngine = new EditorEngine();

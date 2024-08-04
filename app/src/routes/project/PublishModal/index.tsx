@@ -14,13 +14,12 @@ import { CodeIcon, ExternalLinkIcon, ShadowIcon } from '@radix-ui/react-icons';
 import { observer } from 'mobx-react-lite';
 import { useState } from 'react';
 import ReactDiffViewer from 'react-diff-viewer-continued';
-import { useEditorEngine } from '..';
+import { editorEngine } from '@/lib/editor/engine';
 import { MainChannels, WebviewChannels } from '/common/constants';
 import { StyleCodeDiff } from '/common/models';
 import { TemplateNode } from '/common/models/element/templateNode';
 
 const PublishModal = observer(() => {
-    const editorEngine = useEditorEngine();
     const { toast } = useToast();
 
     const [open, setOpen] = useState(false);

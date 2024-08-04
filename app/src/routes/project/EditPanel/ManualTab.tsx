@@ -11,7 +11,7 @@ import {
     ElementStyleType,
 } from '@/lib/editor/engine/styles/models';
 import { observer } from 'mobx-react-lite';
-import { useEditorEngine } from '..';
+import { editorEngine } from '@/lib/editor/engine';
 import AutoLayoutInput from './inputs/AutoLayoutInput';
 import BorderInput from './inputs/BorderInput';
 import ColorInput from './inputs/ColorInput';
@@ -24,7 +24,6 @@ import TextInput from './inputs/TextInput';
 import { ActionTarget, Change } from '/common/actions';
 
 const ManualTab = observer(() => {
-    const editorEngine = useEditorEngine();
     const custom = 'Custom';
     const selectedEl =
         editorEngine.state.selected.length > 0 ? editorEngine.state.selected[0] : undefined;

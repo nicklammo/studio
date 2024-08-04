@@ -4,12 +4,12 @@ import { motion } from 'framer-motion';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useRef, useState } from 'react';
 import { NodeApi, Tree, TreeApi } from 'react-arborist';
-import { useEditorEngine } from '..';
 import NodeIcon from './NodeIcon';
 import { EditorAttributes } from '/common/constants';
 import { escapeSelector, getUniqueSelector } from '/common/helpers';
 import { MouseAction } from '/common/models';
 import { DomElement, WebViewElement } from '/common/models/element';
+import { editorEngine } from '@/lib/editor/engine';
 
 export const IGNORE_TAGS = ['SCRIPT', 'STYLE'];
 
@@ -28,7 +28,6 @@ export interface LayerNode {
 
 const LayersTab = observer(() => {
     const treeRef = useRef();
-    const editorEngine = useEditorEngine();
     const panelRef = useRef<HTMLDivElement>(null);
     const [domTree, setDomTree] = useState<LayerNode[]>([]);
     const [selectedNodes, setSelectedNodes] = useState<string[]>([]);

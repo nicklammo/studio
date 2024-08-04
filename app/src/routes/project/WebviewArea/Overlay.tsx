@@ -1,9 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { useEditorEngine } from '..';
+import { editorEngine } from '@/lib/editor/engine';
 
 function Overlay({ children }: { children: React.ReactNode }) {
     const overlayContainerRef = useRef(null);
-    const editorEngine = useEditorEngine();
     useEffect(() => {
         if (overlayContainerRef.current) {
             const overlayContainer = overlayContainerRef.current;

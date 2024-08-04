@@ -1,18 +1,19 @@
 import { EditorMode } from '@/lib/editor/engine';
 import { WebviewMetadata } from '@/lib/models';
 import { observer } from 'mobx-react-lite';
-import { useEditorEngine } from '..';
 import { MouseAction } from '/common/models';
 import { DomElement, WebViewElement } from '/common/models/element';
+import React from 'react';
+import { editorEngine } from '@/lib/editor/engine';
 
 interface GestureScreenProps {
     metadata: WebviewMetadata;
     webviewRef: React.RefObject<Electron.WebviewTag>;
     setHovered: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsContextMenuVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const GestureScreen = observer(({ webviewRef, setHovered, metadata }: GestureScreenProps) => {
-    const editorEngine = useEditorEngine();
+const GestureScreen = observer(({ webviewRef, setHovered, setIsContextMenuVisible, metadata }: GestureScreenProps) => {
 
     function selectWebview(webview: Electron.WebviewTag) {
         editorEngine.webviews.deselectAll();
@@ -29,6 +30,10 @@ const GestureScreen = observer(({ webviewRef, setHovered, metadata }: GestureScr
             return;
         }
         selectWebview(webview);
+
+        if (e.button === 0) {
+            setIsContextMenuVisible(false);
+        }
     }
 
     function getRelativeMousePosition(
@@ -63,6 +68,7 @@ const GestureScreen = observer(({ webviewRef, setHovered, metadata }: GestureScr
             `window.api.getElementAtLoc(${x}, ${y})`,
         );
         const webviewEl: WebViewElement = { ...el, webviewId: metadata.id };
+
         switch (action) {
             case MouseAction.HOVER:
                 editorEngine.mouseover([webviewEl], webview);

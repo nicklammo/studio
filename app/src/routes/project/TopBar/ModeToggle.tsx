@@ -1,11 +1,10 @@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { EditorMode } from '@/lib/editor/engine';
 import { observer } from 'mobx-react-lite';
-import { useState } from 'react';
-import { useEditorEngine } from '..';
+import { useEffect, useState } from 'react';
+import { editorEngine } from '@/lib/editor/engine';
 
 const ModeToggle = observer(() => {
-    const editorEngine = useEditorEngine();
     const [mode, setMode] = useState<EditorMode>(editorEngine.mode);
 
     return (
