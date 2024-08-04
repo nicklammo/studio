@@ -1,14 +1,14 @@
 import { Textarea } from '@/components/ui/textarea';
 import { useEffect, useState } from 'react';
-import { useEditorEngine } from '../..';
+import { editorEngine } from '@/lib/editor/engine';
+import { observer } from 'mobx-react-lite';
 
 interface Props {
     appendedClass: string[];
     updateElementClass: (newClass: string) => void;
 }
-function TailwindInput({ appendedClass, updateElementClass }: Props) {
+const TailwindInput = observer(({ appendedClass, updateElementClass }: Props)  => {
     const [inputValue, setInputValue] = useState(appendedClass.length > 0 ? appendedClass[0] : '');
-    const editorEngine = useEditorEngine();
 
     useEffect(() => {}, [appendedClass]);
 
@@ -38,6 +38,6 @@ function TailwindInput({ appendedClass, updateElementClass }: Props) {
             />
         </div>
     );
-}
+});
 
 export default TailwindInput;
