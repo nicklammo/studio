@@ -3,12 +3,12 @@ import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { GlobeIcon, Share2Icon } from '@radix-ui/react-icons';
 import { useEffect, useState } from 'react';
-import { useEditorEngine } from '..';
+import { editorEngine } from '@/lib/editor/engine';
 import { MainChannels } from '/common/constants';
 import { TunnelResult } from '/common/models/tunnel';
+import { observer } from 'mobx-react-lite';
 
-export default function SharePopover() {
-    const editorEngine = useEditorEngine();
+const SharePopover = observer(() => {
     const [tunnel, setTunnel] = useState<TunnelResult>();
     const [loading, setLoading] = useState<boolean>(false);
     const [linkCopied, setLinkCopied] = useState<boolean>(false);
@@ -131,4 +131,6 @@ export default function SharePopover() {
             </PopoverContent>
         </Popover>
     );
-}
+});
+
+export default SharePopover;
