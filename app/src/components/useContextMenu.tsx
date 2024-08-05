@@ -46,7 +46,20 @@ const useContextMenu = ({
                 y = y - contextMenu.clientHeight;
             }
 
-            if (isLayersPanelFocused && editorEngine.state.selected[0]) {
+            if (isEditPanelFocused) {
+                setContextMenuData(() => [
+                    {
+                        label: "Edit one",
+                        shortcut: "⌘1",
+                    },
+                    {
+                        label: "Edit two",
+                        shortcut: "⌘2",
+                    },
+                ]);
+            }
+
+            else if (isLayersPanelFocused && editorEngine.state.selected[0]) {
 
                 const instance = editorEngine.ast.map.getInstance(editorEngine.state.selected[0].selector);
                 const root = editorEngine.ast.map.getRoot(editorEngine.state.selected[0].selector);
@@ -83,19 +96,6 @@ const useContextMenu = ({
                 
                     return data;
                 });
-            }
-
-            else if (isEditPanelFocused) {
-                setContextMenuData(() => [
-                    {
-                        label: "Edit one",
-                        shortcut: "⌘1",
-                    },
-                    {
-                        label: "Edit two",
-                        shortcut: "⌘2",
-                    },
-                ]);
             }
 
             else if (isWebviewFocused && editorEngine.state.selected[0]) {
